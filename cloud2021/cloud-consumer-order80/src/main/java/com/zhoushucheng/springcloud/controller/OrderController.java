@@ -3,6 +3,7 @@ package com.zhoushucheng.springcloud.controller;
 import com.zhoushucheng.springcloud.entities.CommonResult;
 import com.zhoushucheng.springcloud.entities.Payment;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,15 @@ public class OrderController {
 
     @Resource
     private RestTemplate restTemplate;
+
+    // ====================> zipkin+sleuth
+    @GetMapping("/consumer/payment/zipkin")
+    @LoadBalanced
+    public String paymentZipkin()
+    {
+        String result = restTemplate.getForObject("http://CLOUD-PAYMENT-SERVICE:8001"+"/payment/zipkin", String.class);
+        return result;
+    }
 
     //远程调用服务提供者的服务
     @GetMapping("/consumer/payment/create")
